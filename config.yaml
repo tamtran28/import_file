@@ -22,7 +22,7 @@ credentials:
     jsmith: ## Tên người dùng được thụt vào dưới 'usernames'
       email: tam@gmail.com ## Các thuộc tính được thụt vào dưới tên người dùng
       name: Tâm
-      password: '$2b$12$E1/gBqc2h3C5e.s.1d74fu4gA70j21.IxfBlf2Lg3NCe243z5iA62'
+      password: '$2a$12$NTmqCoczZplVkF7j4u38e.OK.VCHIcHJC6sFR0aN/SuF4XAdjUO/O'
     rdoe:
       email: rdoe@yahoo.com
       name: Rebecca Doe
