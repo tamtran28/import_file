@@ -1,0 +1,16 @@
+cookie:
+  expiry_days: 30
+  key: "a_random_signature_key" # Thay bằng chuỗi ký tự ngẫu nhiên của bạn
+  name: "some_random_cookie_name"
+preauthorized:
+  emails: []
+credentials:
+  usernames:
+    jsmith:
+      email: tam@gmail.com
+      name: Tâm
+      password: '123' # Thay bằng mật khẩu đã hash
+    rdoe:
+      email: rdoe@yahoo.com
+      name: Rebecca Doe
+      password: '$2b$12$E1/gBqc2h3C5e.s.1d74fu4gA70j21.IxfBlf2Lg3NCe243z5iA62' # Thay bằng mật khẩu đã hash
