@@ -1,13 +1,28 @@
+# cookie:
+#   expiry_days: 30
+#   key: "a_random_signature_key"
+#   name: "some_random_cookie_name"
+# credentials:
+#   usernames:
+#     jsmith:
+#       email: tam@gmail.com
+#       name: Tâm
+#       password: '$2b$12$E1/gBqc2h3C5e.s.1d74fu4gA70j21.IxfBlf2Lg3NCe243z5iA62' # <-- THAY BẰNG KẾT QUẢ BẠN VỪA TẠO
+#     rdoe:
+#       email: rdoe@yahoo.com
+#       name: Rebecca Doe
+#       password: '$2b$12$E1/gBqc2h3C5e.s.1d74fu4gA70j21.IxfBlf2Lg3NCe243z5iA62'
+
 cookie:
   expiry_days: 30
   key: "a_random_signature_key"
   name: "some_random_cookie_name"
 credentials:
-  usernames:
-    jsmith:
-      email: tam@gmail.com
+  usernames: ## 'usernames' được thụt vào dưới 'credentials'
+    jsmith: ## Tên người dùng được thụt vào dưới 'usernames'
+      email: tam@gmail.com ## Các thuộc tính được thụt vào dưới tên người dùng
       name: Tâm
-      password: '$2b$12$E1/gBqc2h3C5e.s.1d74fu4gA70j21.IxfBlf2Lg3NCe243z5iA62' # <-- THAY BẰNG KẾT QUẢ BẠN VỪA TẠO
+      password: '$2b$12$E1/gBqc2h3C5e.s.1d74fu4gA70j21.IxfBlf2Lg3NCe243z5iA62'
     rdoe:
       email: rdoe@yahoo.com
       name: Rebecca Doe
