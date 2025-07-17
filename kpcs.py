@@ -2,10 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 
-# --- CẤU HÌNH TÊN CỘT ---
-# Đây là bước quan trọng nhất, định nghĩa cấu trúc của file tổng và file upload
-# Lưu ý: Tên cột phải chính xác tuyệt đối, bao gồm cả dấu cách, ký tự đặc biệt.
-
+# --- CẤU HÌNH TÊN CỘT (Giữ nguyên không thay đổi) ---
 MASTER_COLUMNS = [
     'STT', 'Đối tượng được KT', 'Số văn bản', 'Ngày, tháng, năm ban hành (mm/dd/yyyy)', 
     'Tên Đoàn kiểm toán', 'Số hiệu rủi ro', 'Số hiệu kiểm soát', 
@@ -73,16 +70,13 @@ UPLOAD_COLUMNS = [
     'Danh sach phan cong'
 ]
 
-# Tên file Excel tổng
 MASTER_FILE = "DuLieuTongHop.xlsx"
 
 
-# --- GIAO DIỆN ỨNG DỤNG ---
 st.set_page_config(page_title="Công Cụ Nhập Liệu Kiểm Toán", layout="wide")
 st.title("🚀 Ứng Dụng Cập Nhật Dữ Liệu Kiểm Toán")
 st.write(f"**Lưu ý:** Vui lòng upload file Excel theo đúng mẫu. Dữ liệu sẽ được thêm vào file tổng: `{MASTER_FILE}`")
 
-# 1. Khu vực upload file
 uploaded_file = st.file_uploader(
     "Chọn file Excel bạn muốn upload:",
     type=["xlsx", "xls"]
@@ -91,48 +85,43 @@ uploaded_file = st.file_uploader(
 if uploaded_file is not None:
     st.info(f"Đã tải lên file: `{uploaded_file.name}`. Nhấn nút bên dưới để xử lý.")
     
-    # Nút bấm để thực hiện
     if st.button("✅ Bắt đầu Cập nhật vào File Tổng"):
         try:
-            # 2. Đọc dữ liệu từ file upload
             uploaded_df = pd.read_excel(uploaded_file, engine='openpyxl')
-            st.write("--- **Xem trước dữ liệu từ file bạn vừa upload:** ---")
+            
+            # =================================================================
+            # ✨ ĐÂY LÀ THAY ĐỔI QUAN TRỌNG NHẤT: LÀM SẠCH TÊN CỘT ✨
+            # Code sẽ tự động xóa các dấu cách thừa ở đầu và cuối mỗi tên cột
+            uploaded_df.columns = uploaded_df.columns.str.strip()
+            # =================================================================
+
+            st.write("--- **Xem trước dữ liệu từ file bạn vừa upload (sau khi đã làm sạch tên cột):** ---")
             st.dataframe(uploaded_df.head())
 
-            # 3. KIỂM TRA CẤU TRÚC CỘT CỦA FILE UPLOAD
-            # Kiểm tra xem tất cả các cột cần thiết có trong file upload không
             missing_cols = set(UPLOAD_COLUMNS) - set(uploaded_df.columns)
             if missing_cols:
-                st.error(f"Lỗi: File upload bị thiếu các cột sau đây: {list(missing_cols)}. Vui lòng kiểm tra lại file mẫu.")
+                st.error(f"Lỗi: File upload vẫn bị thiếu hoặc sai tên các cột sau đây. Vui lòng kiểm tra lại file của bạn.")
+                st.json(list(missing_cols)) # Hiển thị danh sách cột lỗi rõ ràng hơn
             else:
-                # 4. Đọc file tổng (hoặc tạo mới nếu chưa có)
                 if os.path.exists(MASTER_FILE):
                     master_df = pd.read_excel(MASTER_FILE, engine='openpyxl')
                 else:
                     st.warning(f"Không tìm thấy file `{MASTER_FILE}`. Sẽ tạo một file mới.")
                     master_df = pd.DataFrame(columns=MASTER_COLUMNS)
 
-                # 5. XỬ LÝ CỘT STT (SỐ THỨ TỰ)
                 if not master_df.empty and 'STT' in master_df.columns:
                     last_stt = master_df['STT'].max()
-                    # Kiểm tra nếu last_stt là NaN (trường hợp cột STT toàn rỗng)
                     if pd.isna(last_stt):
                         last_stt = 0
                 else:
                     last_stt = 0
                 
-                # Tạo STT mới cho dữ liệu upload, bắt đầu từ số lớn nhất + 1
                 uploaded_df['STT'] = range(int(last_stt) + 1, int(last_stt) + 1 + len(uploaded_df))
 
-                # 6. ÁNH XẠ CỘT VÀ KẾT HỢP DỮ LIỆU
-                # Chỉ lấy các cột theo đúng mẫu từ file upload để đảm bảo thứ tự
                 data_to_add = uploaded_df[UPLOAD_COLUMNS]
                 
-                # Dùng concat để nối 2 DataFrame, pandas sẽ tự động căn chỉnh cột theo tên
-                # Các cột trong file tổng mà file upload không có sẽ tự điền giá trị rỗng (NaN)
                 combined_df = pd.concat([master_df, data_to_add], ignore_index=True)
                 
-                # 7. LƯU LẠI FILE TỔNG
                 combined_df.to_excel(MASTER_FILE, index=False, engine='openpyxl')
                 
                 st.success(f"🎉 Cập nhật thành công! Đã thêm {len(uploaded_df)} dòng mới vào file `{MASTER_FILE}`.")
